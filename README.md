@@ -3,20 +3,17 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
 
 1. Every robot connects to a local network
 2. You do not control the local network, but do control a server on that network 
-3. You want every robot and users laptops to be able to contact each other by hostname
+3. You want every robot and every user to be able to contact each other by hostname
 4. You do not want to use mDNS, or it does not work (see 2)
 
 # Server Installation
 ## RobotDNS User Setup
 1. Create a new user called `robotdns` (or whatever you want). For example: `useradd -m robotdns`.
-   - This user should NOT have `sudo` privileges
 2. In the `robotdns` home directory, `git clone https://github.com:m-elwin/robotdns.git`
-3. To provide a user access obtain their public ssh key.
-   - `~/robotdns/robot_users.py add <keyfile.pub>` to add the user's key.
-   - You can also directly  add the key with `~/robotdns/robot_users.py add <key> <label>`
-4. To remove a client use `~/robotdns/robot_users.py rm <label>|<key>|<keyfile.pub>`
-5. Edit `~/.ssh/authorized_keys` to manually manage users.
-   - The `robot_users.py` script simply enables a user and restricts them to use the `~/robotdns/robot_dns.py` script.
+3. To provide a user access, obtain their public ssh key.
+   - `~/robotdns/robot_users.py add <keyfile.pub> hostname` to add the user's key.
+   - Each key is tied to exactly one hostname. 
+4. To remove a client use `~/robotdns/robot_users.py rm hostname
    
 ## Install and Configure dnsmasq
 1. `sudo apt install dnsmasq`
@@ -31,16 +28,16 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
    user=robotdns
    group=robotdns
 
-    # Don't read from the system's hosts file (your setup may vary)
-    no-hosts
+   # Don't read from the system's hosts file (your setup may vary)
+   no-hosts
 
-    # This directory is where the clients register themselves 
-    addn-hosts=/home/robotdns/hosts/
+   # This directory is where the clients register themselves 
+   addn-hosts=/home/robotdns/hosts/
 
-    # These two options enable us to NOT use fully qualified names
-    # Which is not necessary but
-    expand-hosts
-    domain=msr # can be whatever domain you want as long as its not an actual TLD like com, org, etc...
+   # These two options enable us to NOT use fully qualified names
+   # Which is not necessary but
+   expand-hosts
+   domain=msr # can be whatever domain you want as long as its not an actual TLD like com, org, etc...
    ```
 3. Enable and start `dnsmasq`: `systemctl enable --now dnsmasq`
 
