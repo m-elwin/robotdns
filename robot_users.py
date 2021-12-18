@@ -12,8 +12,7 @@ def do_add(args):
         args.keyfile - the public key file
         args.host  - the host
     """
-    home = os.path.expanduser("~")
-    auth_fname = f"{home}/.ssh/authorized_keys"
+
     if os.path.exists(auth_fname):
         with open(auth_fname, "r") as auth_keys:
             keys = auth_keys.readlines()
@@ -36,22 +35,22 @@ def do_add(args):
             sys.exit(1)
 
         with open(auth_fname, "a") as auth_keys:
-            auth_keys.write(f'restrict,command="~/robotdns/robotdns/dns_update.py {args.host}" {fields[0]} {fields[1]} {args.host}')
+            auth_keys.write(f'restrict,command="~/robotdns/robotdns/dns_update.py {args.host}" {fields[0]} {fields[1]} {args.host}\n')
 
 def do_rm(args):
     """ Handle the rm subcommand
         args.host - the host to remove
     """
     # Make the changes in a new file, in case we get interrupted, then copy it over
-    with open("~/.ssh/authorized_keys", "r") as auth_keys:
+    with open(auth_fname, "r") as auth_keys:
         keys = auth_keys.readlines()
-        with open("~/.ssh/authorized_keys.new", "w") as auth_keys_new:
+        with open(f"{auth_fname}.new", "w") as auth_keys_new:
             for line in keys:
-                vals = keys.split(" ")
+                vals = line.split(" ")
                 if vals[-1] != args.host:
                     auth_keys_new.write(line)
 
-    os.replace(src="~/.ssh/authorized_keys.new", dst="~/.ssh/authorized_keys")
+    os.replace(src=f"{auth_fname}.new", dst=auth_fname)
 
     
     
@@ -74,4 +73,6 @@ def main():
     args.func(args)
     
 if __name__ == "__main__":
+    home = os.path.expanduser("~")
+    auth_fname = f"{home}/.ssh/authorized_keys"
     main()
