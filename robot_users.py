@@ -64,8 +64,7 @@ def main():
     parser_rm.add_argument('host', type=str, help="Hostname of the user to remove")
     parser_rm.set_defaults(func=do_rm)
 
-    # If only a subcommand or no commands is passed, help is displayed
-    args = parser.parse_args(args=None if sys.argv[2:] else ['--help'])
+    args = parser.parse_args()
 
     # Dispatch to the appropriate argument handling function
     args.func(args)
