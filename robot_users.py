@@ -12,9 +12,10 @@ def do_add(args):
         args.keyfile - the public key file
         args.host  - the host
     """
-
-    if os.path.exists("~/.ssh/authorized_keys"):
-        with open("~/.ssh/authorized_keys", "r") as auth_keys:
+    home = os.path.expanduser("~")
+    auth_fname = f"{home}/.ssh/authorized_keys"
+    if os.path.exists(auth_fname):
+        with open(auth_fname, "r") as auth_keys:
             keys = auth_keys.readlines()
             for line in keys:
                 vals = keys.split(" ")
@@ -34,7 +35,7 @@ def do_add(args):
             print(f"Keyfile is of type {fields[0]}, which is unsupported.")
             sys.exit(1)
 
-        with open("~/.ssh/authorized_keys", "a") as auth_keys:
+        with open(auth_fname, "a") as auth_keys:
             auth_keys.write(f'restrict,command="~/robotdns/robotdns/dns_update.py {args.host}" {fields[0]} {fields[1]} {args.host}')
 
 def do_rm(args):
