@@ -12,22 +12,25 @@ def do_add(args):
         args.keyfile - the public key file
         args.host  - the host
     """
-    with open("~/.ssh/authorized_keys", "r") as auth_keys:
-        keys = auth_keys.readlines()
-        for line in keys:
-            vals = keys.split(" ")
-            if vals[-1] == args.host:
-                print(f"Host {args.host} already registered and must be removed if you would like to update it", file=stderr)
-                sys.exit(1)
+
+    if os.path.exists("~/.ssh/authorized_keys"):
+        with open("~/.ssh/authorized_keys", "r") as auth_keys:
+            keys = auth_keys.readlines()
+            for line in keys:
+                vals = keys.split(" ")
+                if vals[-1] == args.host:
+                    print(f"Host {args.host} already registered and must be removed if you would like to update it", file=stderr)
+                    sys.exit(1)
+
     with open(args.keyfile, "r") as keyfile:
         key = keyfile.readlines()
         # perform some very basic validation
         if len(key) != 1:
             print(f"Keyfile {args.keyfile} is invalid")
             sys.exit(1)
-        fields = key.split(" ")
+        fields = key[0].split(" ")
 
-        if fields[0] not in ["ssh-rsa", "ssh-ed24419"]:
+        if fields[0] not in ["ssh-rsa", "ssh-ed25519"]:
             print(f"Keyfile is of type {fields[0]}, which is unsupported.")
             sys.exit(1)
 
@@ -64,7 +67,7 @@ def main():
     parser_rm.add_argument('host', type=str, help="Hostname of the user to remove")
     parser_rm.set_defaults(func=do_rm)
 
-    args = parser.parse_args()
+    args = parser.parse_args(args=None if sys.argv[1:] else ['--help'])
 
     # Dispatch to the appropriate argument handling function
     args.func(args)
