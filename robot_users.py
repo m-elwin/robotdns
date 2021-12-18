@@ -5,19 +5,51 @@ Manages the users that are allowed to register their IP/hostname with the dns se
 
 import argparse
 import sys
+import os
 
 def do_add(args):
     """ Handle the add subcommand
         args.keyfile - the public key file
         args.host  - the host
     """
-    print("do_add")
+    with open("~/.ssh/authorized_keys", "r") as auth_keys:
+        keys = auth_keys.readlines()
+        for line in keys:
+            vals = keys.split(" ")
+            if vals[-1] == args.host:
+                print(f"Host {args.host} already registered and must be removed if you would like to update it", file=stderr)
+                sys.exit(1)
+    with open(args.keyfile, "r") as keyfile:
+        key = keyfile.readlines()
+        # perform some very basic validation
+        if len(key) != 1:
+            print(f"Keyfile {args.keyfile} is invalid")
+            sys.exit(1)
+        fields = key.split(" ")
+
+        if fields[0] not in ["ssh-rsa", "ssh-ed24419"]:
+            print(f"Keyfile is of type {fields[0]}, which is unsupported.")
+            sys.exit(1)
+
+        with open("~/.ssh/authorized_keys", "a") as auth_keys:
+            auth_keys.write(f'restrict,command="~/robotdns/robotdns/dns_update.py {args.host}" {fields[0]} {fields[1]} {args.host}')
 
 def do_rm(args):
     """ Handle the rm subcommand
         args.host - the host to remove
     """
-    print("do_rm")
+    # Make the changes in a new file, in case we get interrupted, then copy it over
+    with open("~/.ssh/authorized_keys", "r") as auth_keys:
+        keys = auth_keys.readlines()
+        with open("~/.ssh/authorized_keys.new", "w") as auth_keys_new:
+            for line in keys:
+                vals = keys.split(" ")
+                if vals[-1] != args.host:
+                    auth_keys_new.write(line)
+
+    os.replace(src="~/.ssh/authorized_keys.new", dst="~/.ssh/authorized_keys")
+
+    
     
 def main():
     parser = argparse.ArgumentParser(description="Manage users that are allowed to register their IP/hostname")
