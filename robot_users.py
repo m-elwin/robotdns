@@ -52,6 +52,12 @@ def do_rm(args):
 
     os.replace(src=f"{auth_fname}.new", dst=auth_fname)
 
+    # Delete the dns record
+    if os.path.exists(f"{home}/hosts/{args.host}"):
+        os.remove(f"{home}/hosts/{args.host}")
+        # Refresh dnsmasq
+        with open("/run/dnsmasq/dnsmasq.pid") as dnsmasq_pid:
+            os.kill(int(dnsmasq_pid.read()), signal.SIGHUP)
     
     
 def main():
