@@ -47,7 +47,7 @@ def do_rm(args):
         with open(f"{auth_fname}.new", "w") as auth_keys_new:
             for line in keys:
                 vals = line.split(" ")
-                if vals[-1] != args.host:
+                if vals[-1].rstrip() != args.host:
                     auth_keys_new.write(line)
 
     os.replace(src=f"{auth_fname}.new", dst=auth_fname)
