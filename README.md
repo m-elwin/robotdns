@@ -1,7 +1,7 @@
 # Overview
 Robot DNS is a dynamic DNS server for a very specific robotics application:
 
-1. Every robot connects to a local network
+1. Every robot connects to the same local network, as do the robot users
 2. You do not control the local network, but do control a server on that network 
 3. You want every robot and every user to be able to contact each other by hostname
 4. You do not want to use mDNS, or it does not work (see 2)
