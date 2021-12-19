@@ -6,11 +6,19 @@ nmconnect=$1
 # hostname of the dns server
 dnshost=$2
 
-echo "Profile: $nmconnect, Host: $dnshost"
+script=$(readlink -f "$0")
+scriptpath=$(dirname "$script")
+
+echo "Setting up Client. Profile: $nmconnect, Host: $dnshost"
 
 # Delete the old key, make the new key
-rm ~/.ssh/id_robotdns ~/.ssh/id_robotdns.pub
-ssh-keygen -t ed25519 -C $(hostname) -f ~/.ssh/id_robotdns -q -N ""
+if [ -f ~/.ssh/id_robotdns ]
+then
+    echo "~/.ssh/id_robotdns already exists. Not creating new key. rm ~/.ssh/id_robotdns ~/.ssh/id_robotdns.pub and re-run to recreate key"
+else
+    echo "Creating ssh key: ~/.ssh/id_robotdns and ~/.ssh/id_robotdns.pub"
+    ssh-keygen -t ed25519 -C $(hostname) -f ~/.ssh/id_robotdns -q -N ""
+fi
 
 echo "\nSend ~/.ssh/id_robotdns.pub to your system administrator to obtain access to the dns server"
 
@@ -24,19 +32,7 @@ nmcli con mod ${nmconnect}.robot ipv4.dns $dnsip
 
 # Create the network manager startup script and
 echo "Creating the network manager dispatch script:"
-cat <<EOF | sudo tee /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh
-#!/bin/sh
-
-if [ "\$2" = "up" ] || [ "\$2" = "dhcp4-change" ]
-then
-    if [ "\$CONNECTION_ID" = "${nmconnect}.robot" ] 
-    then
-        # Execute the ssh command as the original user
-        su -c sh -c 'ssh -T -i $HOME/.ssh/id_robotdns robotdns@$dnshost' $(whoami) 
-    fi
-fi
-
-EOF
+sudo cp ${scriptpath}/21-robotdns-register.sh /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh
 sudo chmod 500 /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh
 
 
