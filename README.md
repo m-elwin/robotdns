@@ -49,7 +49,10 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
 1. Download and run the installation script:
    - `curl -L https://github.com/ > | sh -s -- <profile> <server>`, where `<profile>` is the name of the network manager profile (usually the wifi network name) to clone
       and `<server>` is the address of the robotdns server
-   - The script will prompt you for a password to create an ssh key. The public key should be sent to your system administrator and is used to grant access
+   - The script will create an ssh key. The public key should be sent to your system administrator and is used to grant access. 
+2. After your administrator has provided access, run `ssh -T -i $HOME/.ssh/id_robotdns robotdns@$dnshost` to verify the connection.
+   - This will prompt you to accept a fingerprint. Type yes if it looks okay.  It is important for the fingerprint to have been accepted
+     so that subsequently the network can run this ssh command automatically.
 3. `nmcli con up <nmconnection>.robot` connects to the robot network using the `robotdns` server and registers your computer
    - Assuming your ssh keys are added to the agent, this will automatically register you
    - If not, you can manually do `ssh add ~/.ssh/id_robotdns` to add your key prior to connecting
