@@ -18,8 +18,8 @@ def do_add(args):
             keys = auth_keys.readlines()
             for line in keys:
                 vals = line.split(" ")
-                if vals[-1] == args.host:
-                    print(f"Host {args.host} already registered and must be removed if you would like to update it", file=stderr)
+                if vals[-1].rstrip() == args.host:
+                    print(f"Host {args.host} already registered and must be removed if you would like to update it", file=sys.stderr)
                     sys.exit(1)
 
     with open(args.keyfile, "r") as keyfile:
