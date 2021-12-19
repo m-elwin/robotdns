@@ -29,11 +29,18 @@ nmcli con mod ${nmconnect}.robot ipv4.dns-search msr
 nmcli con mod ${nmconnect}.robot ipv4.ignore-auto-dns true
 nmcli con mod ${nmconnect}.robot ipv4.dns $dnsip
 
-
 # Create the network manager startup script and
 echo "Creating the network manager dispatch script:"
 sudo cp ${scriptpath}/21-robotdns-register.sh /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh
 sudo chmod 500 /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh
+
+# Setup settigns for the user script to use
+cat <<EOF | sudo tee /etc/NetworkManager/system-connections/${nmconnect}.robot.nmconnection.settings
+export nmconnect=${nmconnect}
+export dnshost=${dnshost}
+export user_home=${HOME}
+EOF
+sudo chmod 600 /etc/NetworkManager/system-connections/${nmconnect}.robot.nmconnection.settings
 
 
 echo "Complete. Use nmcli con up ${nmconnect}.robot to connect"
