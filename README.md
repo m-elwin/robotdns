@@ -9,6 +9,7 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
 # Server Installation
 ## RobotDNS User Setup
 1. Create a new user called `robotdns`. For example: `useradd -m robotdns`.
+2. Create `/home/robotdns/hosts`: `mkdir -p /home/robotdns/hosts`
 2. In the `robotdns` home directory, `git clone https://github.com/m-elwin/robotdns.git`
 3. To provide a user access, obtain their public ssh key.  
    - `~/robotdns/robot_users.py --add <keyfile.pub> hostname` to add the user's key.

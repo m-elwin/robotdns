@@ -17,7 +17,7 @@ if __name__ == "__main__":
     client_ip = client.split(" ")[0]
 
     # Update the ip address entry for the host
-    with open(f"/home/robotdns/{host}","w") as hosts:
+    with open(f"/home/robotdns/hosts/{host}","w") as hosts:
             print(f"{client_ip} {host}", file=hosts)
 
     # Refresh dnsmasq
