@@ -31,7 +31,7 @@ if [ "\$2" = "up" ] || [ "\$2" = "dhcp4-change" ]
 then
     if [ "\$CONNECTION_ID" = "${nmconnect}.robot" ] 
     then
-        ssh robotdns@$dnshost
+        ssh -T robotdns@$dnshost
     fi
 fi
 
