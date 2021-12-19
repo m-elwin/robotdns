@@ -17,7 +17,7 @@ def do_add(args):
         with open(auth_fname, "r") as auth_keys:
             keys = auth_keys.readlines()
             for line in keys:
-                vals = keys.split(" ")
+                vals = line.split(" ")
                 if vals[-1] == args.host:
                     print(f"Host {args.host} already registered and must be removed if you would like to update it", file=stderr)
                     sys.exit(1)
