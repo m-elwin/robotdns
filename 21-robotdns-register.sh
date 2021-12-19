@@ -8,5 +8,3 @@ then
         su -c sh -c 'ssh -T -i $HOME/.ssh/id_robotdns robotdns@$dnshost' $(whoami) 
     fi
 fi
-
-EOF
