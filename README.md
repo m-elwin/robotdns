@@ -13,7 +13,7 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
 3. To provide a user access, obtain their public ssh key.
    - `~/robotdns/robot_users.py --add <keyfile.pub> hostname` to add the user's key.
    - Each key is tied to exactly one hostname. 
-4. To remove a client use `~/robotdns/robot_users.py --rm hostname
+4. To remove a client use `~/robotdns/robot_users.py --rm hostname`
    
 ## Install and Configure dnsmasq
 1. `sudo apt install dnsmasq`
@@ -37,15 +37,17 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
    # These two options enable us to NOT use fully qualified names
    # Which is not necessary but
    expand-hosts
-   domain=msr # can be whatever domain you want as long as its not an actual TLD like com, org, etc...
+   domain=msr # can be anything that is not an actual TLD (e.g., com, org, edu) 
    ```
 3. Enable and start `dnsmasq`: `systemctl enable --now dnsmasq`
 
 # Client Installation
 1. The client must have ssh access to the `robotdns` user via a public key
    - Users can, for example, generate keys with `ssh-keygen -t ed25519`. The public key is then stored in `~/.ssh/id_ed25519.pub`
-2. Users should download the installation script `scp robotdns@<server>:/home/roboddns/robotdns/install_robot.py /tmp/install_robot.py`
-3. Run the one-time installation: `/tmp/install_robot.py <nmconnection> <server>`, where `<nmconnection>` is the name of the Network Manager connection that connects
+2. Users should download the installation script:
+   `scp robotdns@<server>:/home/roboddns/robotdns/install_robot.py /tmp/install_robot.py`
+3. Run the one-time installation: 
+   `/tmp/install_robot.py <nmconnection> <server>`, where `<nmconnection>` is the name of the Network Manager connection that connects
    to the network that the robots are on and `<server>` is the hostname of the dns server.
 3. `nmcli con up <nmconnection>.robot` connects to the robot network using the `robotdns` server and registers your computer
    with that server. It is recommended to only connect to this network when using the robots
