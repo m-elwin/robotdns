@@ -23,6 +23,6 @@ if __name__ == "__main__":
 
     # Refresh dnsmasq
     with open("/run/dnsmasq/dnsmasq.pid") as dnsmasq_pid:
-            os.kill(int(dnsmasq_pid), signal.SIGHUP)
+            os.kill(int(dnsmasq_pid.read()), signal.SIGHUP)
 
 
