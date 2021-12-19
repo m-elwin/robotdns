@@ -35,7 +35,7 @@ def do_add(args):
             sys.exit(1)
 
         with open(auth_fname, "a") as auth_keys:
-            auth_keys.write(f'restrict,command="~/robotdns/robotdns/dns_update.py {args.host}" {fields[0]} {fields[1]} {args.host}\n')
+            auth_keys.write(f'restrict,command="~/robotdns/dns_update.py {args.host}" {fields[0]} {fields[1]} {args.host}\n')
 
 def do_rm(args):
     """ Handle the rm subcommand

@@ -42,6 +42,7 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
    # The domain is fixed at msr (otherwise you need to modify the client-side script)
    domain=msr 
    ```
+2. Disable systemd-resolved: `systemctl disable --now systemd-resolved`
 3. Enable and start `dnsmasq`: `systemctl enable --now dnsmasq`
 
 # Client Installation
