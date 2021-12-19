@@ -31,11 +31,17 @@ if [ "\$2" = "up" ] || [ "\$2" = "dhcp4-change" ]
 then
     if [ "\$CONNECTION_ID" = "${nmconnect}.robot" ] 
     then
-        ssh -T -i $HOME/.ssh/id_robotdns robotdns@$dnshost
+        # Execute the ssh command as the original user
+        su -c sh -c 'ssh -T -i $HOME/.ssh/id_robotdns robotdns@$dnshost' $(whoami) 
     fi
 fi
 
 EOF
 sudo chmod 500 /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh
+
+# Install the server fingerprint.  We blindly trust the server during setup, but
+# Will be able to detect when it changes.
+# Theoretically, the user should verify the fingerprint
+ssh -T -i $HOME/.ssh/id_robotdns robotdns@$dnshost
 
 echo "Complete. Use nmcli con up ${nmconnect}.robot to connect"
