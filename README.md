@@ -38,22 +38,26 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
    # These two options enable us to NOT use fully qualified names
    # This is important for ROS since some parts of it expect hostname to resolve directly
    expand-hosts
-   
+
    # The domain is fixed at msr (otherwise you need to modify the client-side script)
-   domain=msr 
+   domain=msr
    ```
 2. Disable systemd-resolved: `systemctl disable --now systemd-resolved`
 3. Enable and start `dnsmasq`: `systemctl enable --now dnsmasq`
 
-# Client Installation
+# Client
+## Installation
 1. Download and run the installation script:
-   - `curl -L https://raw.githubusercontent.com/m-elwin/robotdns/main/setup_client.sh | sh -s -- <profile> <server>`, where `<profile>` is the name of the network manager profile (usually the wifi network name) to clone
-      and `<server>` is the address of the robotdns server
+   - `curl -L "https://raw.githubusercontent.com/m-elwin/robotdns/main/setup_client.sh" | sh -s -- <profile> <server>`, where `<profile>` is the name of the network manager profile (usually the wifi network name) to clone
+      and `<server>` is the address of the robotdns server (provided by the system administrator)
    - The script will create an ssh key. The public key (ending in `.pub`) should be sent to your system administrator and is used to grant access. 
    - If you are concerned about running the script, view it first!
    - The private key should be kept secret. Anyone with your private key can associate your hostname with any ip address on the server.
-2. After your administrator has provided access, run `ssh -T -i $HOME/.ssh/id_robotdns robotdns@<server>` to verify the connection.
-   - This will prompt you to accept a fingerprint. Type yes to trust the server.
+1. After your administrator has provided access, run `ssh -T -i $HOME/.ssh/id_robotdns robotdns@<server>` to verify the connection.
+   - This will prompt you to accept a fingerprint.
+   - Your administrator will provide you with what fingerprint to expect. This should match what you see to verify that you have
+     connected to the correct server..
+## Usage
 3. `nmcli con up <nmconnection>.robot` connects to the robot network using the `robotdns` server and registers your computer
-   - Assuming your ssh keys are added to the agent, this will automatically register you
+   - Assuming your ssh-keys are added to the agent automatically, this will automatically register you
    - If not, you can manually do `ssh add ~/.ssh/id_robotdns` to add your key prior to connecting
