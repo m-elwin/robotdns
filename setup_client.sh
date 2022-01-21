@@ -6,6 +6,12 @@ nmconnect=$1
 # hostname of the dns server
 dnshost=$2
 
+if [ $# != 2 ]
+then
+    echo "Usage: setup_client.sh <network_profile> <robot_dns_host>"
+    exit 1
+fi
+
 echo "Setting up Client. Profile: $nmconnect, Host: $dnshost"
 
 # Delete the old key, make the new key
@@ -14,7 +20,9 @@ then
     echo "~/.ssh/id_robotdns already exists. Not creating new key. rm ~/.ssh/id_robotdns ~/.ssh/id_robotdns.pub and re-run to recreate key"
 else
     echo "Creating ssh key: ~/.ssh/id_robotdns and ~/.ssh/id_robotdns.pub"
-    read -s -p "Enter password to use for the ssh key: " keypass
+    stty -echo
+    read -p "Enter password to use for the ssh key: " keypass
+    stty echo
     ssh-keygen -t ed25519 -C $(hostname) -f ~/.ssh/id_robotdns -n "$keypass"
 fi
 
