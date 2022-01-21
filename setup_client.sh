@@ -31,12 +31,13 @@ nmcli con mod ${nmconnect}.robot ipv4.ignore-auto-dns true
 nmcli con mod ${nmconnect}.robot ipv4.dns $dnsip
 
 # Create the network manager startup script and
-echo "Creating the network manager dispatch script:"
+echo "Creating the network manager dispatch script /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh"
 curl --silent https://raw.githubusercontent.com/m-elwin/robotdns/main/21-robotdns-register.sh \
     | sudo tee /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh 1>/dev/null
 sudo chmod 500 /etc/NetworkManager/dispatcher.d/21-robotdns-register.sh
 
 # Setup settigns for the user script to use
+echo "Saving the settings in /etc/NetworkManager/system-connections/${nmconnect}.robot.nmconnection.settings"
 cat <<EOF | sudo tee /etc/NetworkManager/system-connections/${nmconnect}.robot.nmconnection.settings 1>/dev/null
 export nmconnect=${nmconnect}
 export dnshost=${dnshost}
@@ -44,7 +45,8 @@ export user_home=${HOME}
 EOF
 sudo chmod 600 /etc/NetworkManager/system-connections/${nmconnect}.robot.nmconnection.settings
 
-echo "Setup complete, but there are a few additional steps you must take to complete setup:"
+echo "\n***********************************************************************************\n"
+echo "Setup complete, but there are a few additional steps you must take to complete setup:\n"
 echo "*** One-Time Setup ***"
 echo "Send ~/.ssh/id_robotdns.pub to your system administrator to gain access"
 echo "Initiate your access with: ssh -T -i $HOME/.ssh/id_robotdns robotdns@${dnshost}"
