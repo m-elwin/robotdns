@@ -12,9 +12,9 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
 2. Create `/home/robotdns/hosts`: `mkdir -p /home/robotdns/hosts`
 2. In the `robotdns` home directory, `git clone https://github.com/m-elwin/robotdns.git`
 3. To provide a user access, obtain their public ssh key.  
-   - `~/robotdns/robot_users.py --add <keyfile.pub> hostname` to add the user's key.
+   - `~/robotdns/robot_users.py add <keyfile.pub> hostname` to add the user's key.
    - Each key is tied to exactly one hostname. 
-4. To remove a client use `~/robotdns/robot_users.py --rm hostname`
+4. To remove a client use `~/robotdns/robot_users.py rm hostname`
    
 ## Install and Configure dnsmasq
 1. `sudo apt install dnsmasq`
