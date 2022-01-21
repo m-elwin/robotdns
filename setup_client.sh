@@ -14,8 +14,8 @@ then
     echo "~/.ssh/id_robotdns already exists. Not creating new key. rm ~/.ssh/id_robotdns ~/.ssh/id_robotdns.pub and re-run to recreate key"
 else
     echo "Creating ssh key: ~/.ssh/id_robotdns and ~/.ssh/id_robotdns.pub"
-    echo "You will be prompted to create a password to protect the key"
-    ssh-keygen -t ed25519 -C $(hostname) -f ~/.ssh/id_robotdns 
+    read -s -p "Enter password to use for the ssh key: " keypass
+    ssh-keygen -t ed25519 -C $(hostname) -f ~/.ssh/id_robotdns -n "$keypass"
 fi
 
 dnsip=$(host $dnshost | grep -v IPv6 | awk '{ print $4 }')
