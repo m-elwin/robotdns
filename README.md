@@ -6,6 +6,24 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
 3. You want every robot and every user to be able to contact each other by hostname
 4. You do not want to use mDNS, or it does not work (see 2)
 
+# Client
+## Installation
+1. Download and run the installation script:
+   - `curl "https://raw.githubusercontent.com/m-elwin/robotdns/main/setup_client.sh" | sh -s -- <profile> <server>`, where `<profile>` is the name of the network manager profile (usually the wifi network name) to clone
+      and `<server>` is the address of the robotdns server (provided by the system administrator)
+   - The script will create an ssh key. The public key (ending in `.pub`) should be sent to your system administrator and is used to grant access. 
+   - If you are concerned about running the script, view it first!
+   - The private key should be kept secret. Anyone with your private key can associate your hostname with any ip address on the server.
+1. After your administrator has provided access, run `ssh -T -i $HOME/.ssh/id_robotdns robotdns@<server>` to verify the connection.
+   - This will prompt you to accept a fingerprint.
+   - Your administrator will provide you with what fingerprint to expect. This should match what you see to verify that you have
+     connected to the correct server..
+
+## Usage
+3. `nmcli con up <nmconnection>.robot` connects to the robot network using the `robotdns` server and registers your computer
+   - Assuming your ssh-keys are added to the agent automatically, this will automatically register you
+   - If not, you can manually do `ssh add ~/.ssh/id_robotdns` to add your key prior to connecting
+
 # Server Installation
 ## RobotDNS User Setup
 1. Create a new user called `robotdns`. For example: `useradd -m robotdns`.
@@ -15,7 +33,7 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
    - `~/robotdns/robot_users.py add <keyfile.pub> hostname` to add the user's key.
    - Each key is tied to exactly one hostname. 
 4. To remove a client use `~/robotdns/robot_users.py rm hostname`
-   
+
 ## Install and Configure dnsmasq
 1. `sudo apt install dnsmasq`
 2. Add the following options to `/etc/dnsmasq.conf` 
@@ -45,19 +63,3 @@ Robot DNS is a dynamic DNS server for a very specific robotics application:
 2. Disable systemd-resolved: `systemctl disable --now systemd-resolved`
 3. Enable and start `dnsmasq`: `systemctl enable --now dnsmasq`
 
-# Client
-## Installation
-1. Download and run the installation script:
-   - `curl "https://raw.githubusercontent.com/m-elwin/robotdns/main/setup_client.sh" | sh -s -- <profile> <server>`, where `<profile>` is the name of the network manager profile (usually the wifi network name) to clone
-      and `<server>` is the address of the robotdns server (provided by the system administrator)
-   - The script will create an ssh key. The public key (ending in `.pub`) should be sent to your system administrator and is used to grant access. 
-   - If you are concerned about running the script, view it first!
-   - The private key should be kept secret. Anyone with your private key can associate your hostname with any ip address on the server.
-1. After your administrator has provided access, run `ssh -T -i $HOME/.ssh/id_robotdns robotdns@<server>` to verify the connection.
-   - This will prompt you to accept a fingerprint.
-   - Your administrator will provide you with what fingerprint to expect. This should match what you see to verify that you have
-     connected to the correct server..
-## Usage
-3. `nmcli con up <nmconnection>.robot` connects to the robot network using the `robotdns` server and registers your computer
-   - Assuming your ssh-keys are added to the agent automatically, this will automatically register you
-   - If not, you can manually do `ssh add ~/.ssh/id_robotdns` to add your key prior to connecting
