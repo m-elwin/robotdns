@@ -6,6 +6,7 @@ Manages the users that are allowed to register their IP/hostname with the dns se
 import argparse
 import sys
 import os
+import signal
 
 def do_add(args):
     """ Handle the add subcommand
