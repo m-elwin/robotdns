@@ -49,6 +49,7 @@ echo "\n************************************************************************
 echo "Setup complete, but there are a few additional steps you must take to complete setup:\n"
 echo "*** One-Time Setup ***"
 echo "Send ~/.ssh/id_robotdns.pub to your system administrator to gain access"
+echo "After obtaining access:
 echo "Initiate your access with: ssh -T -i $HOME/.ssh/id_robotdns robotdns@${dnshost}"
 echo "\n*** Regular Usage ***"
 echo "Connect to the robot network: nmcli con up ${nmconnect}.robot"
